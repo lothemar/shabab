@@ -1,0 +1,1 @@
+l kol month condition n-check el corresponding days comparison. e.g. : p1 : 2020-4-9 to 2020-6-13 , p2 : 2020-3-21 to 2020-4-7
