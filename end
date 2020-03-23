@@ -1,0 +1,41 @@
+[33mcommit f143532b49b5e289c79108a3a1480f98a3df2955[m[33m ([m[1;36mHEAD -> [m[1;32moverlapping_with_scores[m[33m)[m
+Author: darkxnovaz <DarKxNovaZ@gmail.com>
+Date:   Mon Mar 23 15:33:26 2020 +0200
+
+    FINALIZED VERSION OF overlapPeriod.
+
+[33mcommit e8bfb571909dd4694b076032be5e2493fbb171e7[m[33m ([m[1;32mnewoverlapperiod[m[33m)[m
+Author: darkxnovaz <DarKxNovaZ@gmail.com>
+Date:   Mon Mar 23 14:39:20 2020 +0200
+
+    unfinished work
+
+[33mcommit bd225fa43b183bc5defa76389d3ca9e46ab7d68a[m[33m ([m[1;32mmaster[m[33m)[m
+Author: darkxnovaz <DarKxNovaZ@gmail.com>
+Date:   Mon Mar 23 01:11:00 2020 +0200
+
+    Finished the overlapPeriod predicate.
+
+[33mcommit ec14712a673e5d505bd477211fe4d4adad5e1d59[m[33m ([m[1;31morigins/master[m[33m)[m
+Author: darkxnovaz <DarKxNovaZ@gmail.com>
+Date:   Sat Mar 21 03:26:08 2020 +0200
+
+    read notes ya fashla
+
+[33mcommit 9143320a0833c95a2293fd020c5e1d4c60d9008a[m
+Author: darkxnovaz <DarKxNovaZ@gmail.com>
+Date:   Fri Mar 20 22:45:48 2020 +0200
+
+    battee5
+
+[33mcommit 0c59d8d9c2fc82896f8ec6a9f98b3e49adc21e3e[m
+Author: Valz <ahmadahussein0@gmail.com>
+Date:   Fri Mar 20 22:42:17 2020 +0200
+
+    Ignored ahmad.pl
+
+[33mcommit bb0f8d269437fe1b39d50bb9f01f210b031b3b4b[m
+Author: Valz <ahmadahussein0@gmail.com>
+Date:   Fri Mar 20 20:52:41 2020 +0200
+
+    Initial commit
