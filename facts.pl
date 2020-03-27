@@ -113,3 +113,11 @@ preferenceSatisfaction(Offer, Customer, ChosenPrefs, S):-
     meanPreference(Offer, Customer, ChosenPrefs, S2),
     accomodationPreference(Offer, Customer, ChosenPrefs, S3),
     S is S1 + S2 + S3, !.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%possibleSubset predicate:
+%nothing to explain really
+possibleSubset([],[]).
+possibleSubset([H|_],[H]).
+possibleSubset(L,R) :- permutation(L, R).
+possibleSubset([_|T],R) :- possibleSubset(T, R).
