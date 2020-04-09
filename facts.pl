@@ -113,11 +113,94 @@ preferenceSatisfaction(Offer, Customer, ChosenPrefs, S):-
     meanPreference(Offer, Customer, ChosenPrefs, S2),
     accomodationPreference(Offer, Customer, ChosenPrefs, S3),
     S is S1 + S2 + S3, !.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %possibleSubset predicate:
 %nothing to explain really
 possibleSubset([],[]).
 possibleSubset([H|_],[H]).
 possibleSubset(L,R) :- permutation(L, R).
 possibleSubset([_|T],R) :- possibleSubset(T, R).
+
+validate(dest(X), [X|T]).
+validate(dest(X), [Y|T]):-
+    validate(dest(X), T).
+validate(activity([H|T]), [[H1|T1]|T2]):-
+    possibleSubset([H1|T1], [H|T]).
+validate(activity([H|T]), [H1|T1]):-
+    validate(activity([H|T]), T1).
+validate(budget(Budget), [cost(Cost)|T]):-
+    Budget>=Cost, !.
+validate(budget(Budget), [Cost|T]):-
+    validate(budget(Budget), T).
+validate(period(Start, End), [period(Start2, End2)| T]):-
+    overlapPeriod(period(Start, End), period(Start2, End2)).
+validate(period(Start, End), [X|T]):-
+    validate(period(Start, End), T).
+
+validateOffer([], _).
+validateOffer([H|T], [H1|T1]):-
+    validate(H, [H1|T1]),
+    validateOffer(T, [H1|T1]).
+
+trim(ChosenPrefs, A, M, PrefUpdated):-
+    prefExists(means(M), ChosenPrefs),
+    select(means(M), ChosenPrefs, PrefUpdated),
+    trim(PrefUpdated, A, _, PrefUpdated), !.
+trim(ChosenPrefs, A, M, PrefUpdated):-
+    prefExists(accomodation(A), ChosenPrefs),
+    select(accomodation(A), ChosenPrefs, PrefUpdated),
+    trim(PrefUpdated, _ , M, PrefUpdated), !.
+trim(ChosenPrefs, A, M, ChosenPrefs).
+
+offer_to_list(offer(Destination, Activities, Cost, _, _, period(Start, End), _, _), [Destination, Activities, cost(Cost), period(Start, End)]).
+get_guests(offer(_, _, _, _, _, period(_,_), _, N), N).
+%getOffer([dest(dahab), period(2020-04-01, 2020-09-15), activity([snorkeling, diving]), budget(70000)],O).
+
+getOffer(ChosenPrefs, Offer):-
+    offerAccommodation(Offer, A),
+    offerMean(Offer, M),
+    trim(ChosenPrefs, A, M, PrefUpdated),
+    offer_to_list(Offer,OfferList),
+    validateOffer(PrefUpdated, OfferList).
+
+recommendOfferForCustomer(Prefs, ChosenPrefs, Offer):-
+    possibleSubset(Prefs, ChosenPrefs),
+    getOffer(ChosenPrefs, Offer).
+max(S1, S2, S2):-
+    S2>S1.
+max(S1, S2, S1).
+max(S1, S2, Offer1, Offer2, S2, Offer2):-
+    S2>S1.
+max(S1, S2, Offer1, Offer2, S1, Offer1).
+
+offersProvided([], []).
+offersProvided([Pref|T], [Offer| T1]):-
+    recommendOfferForCustomer(Pref, _, Offer),
+    offersProvided(T, T1).
+
+maximizeSatisfaction([], [], _, 0).
+maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
+    preferenceSatisfaction(Customer, Preference, Offer, S1),
+    maximizeSatisfaction(T, T1, Offer, S2),
+    max(S1, S2, S).
+satisfactionByOffer([], [], _, 0, _).
+satisfactionByOffer(_, _, _, 0, 0).
+satisfactionByOffer([Customer|T], [Preference|T1], Offer, S, N):-
+    maximizeSatisfaction(Customer, Preference, Offer, S1),
+    N1 is N-1,
+    satisfactionByOffer(T, T1, Offer, S2, N1),
+    S is S1 + S2.
+
+findBestOffer(Customers, Preferences, [], nil, 0).
+findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S):-
+    get_guests(Offer, N),
+    satisfactionByOffer(Customers, Preferences, Offer1, S1, N),
+    findBestOffer(Customers, Preferences, T1, Offer2, S2),
+    max(S1, S2, Offer1, Offer2, S, Offer).
+
+%getCustomers([Customer|T], Offer, [Customers2| T2]):-
+
+recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
+    offersProvided(PreferenceList, Offers),
+    findBestOffer(Customers, PreferenceList, Offers, Offer, S),
+%    getCustomers(Customers, Offer, CustomersChosen).
+%getCustomers will return the combination of CustomersChosen that led to the best offer
