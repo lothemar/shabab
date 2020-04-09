@@ -185,7 +185,7 @@ maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
 satisfactionByOffer([], [], _, 0, _).
 satisfactionByOffer(_, _, _, 0, 0).
 satisfactionByOffer([Customer|T], [Preference|T1], Offer, S, N):-
-    maximizeSatisfaction(Customers, Preference, Offer, S1),
+    maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S1),
     N1 is N-1,
     satisfactionByOffer(T, T1, Offer, S2, N1),
     S is S1 + S2.
