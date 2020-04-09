@@ -17,16 +17,25 @@ customerPreferredActivity(customer(ahmed, aly, 1993-01-30, single, 0, student), 
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), snorkeling, 60).
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), diving, 20).
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), horseRiding, 50).
+customerPreferredActivity(customer(ahmed, obama, 1995-01-30, single, 0, student), diving, 100).
+customerPreferredActivity(customer(mo, qamal, 1997-01-30, single, 0, student), snorkeling, 100).
+customerPreferredActivity(customer(hassan, aly, 1999-01-30, single, 0, student), horseRiding, 100).
 
 % customerPreferredMean(X, Y, R) -> Y is the preferred transportaion mean wrt customer X with relevance R
 
 customerPreferredMean(customer(ahmed, aly, 1993-01-30, single, 0, student), bus, 100).
 customerPreferredMean(customer(mohamed, elkasad, 1999-01-30, single, 0, student), bus, 10).
+customerPreferredMean(customer(ahmed, obama, 1995-01-30, single, 0, student), bus, 100).
+customerPreferredMean(customer(mo, qamal, 1997-01-30, single, 0, student), bus, 100).
+customerPreferredMean(customer(hassan, aly, 1999-01-30, single, 0, student), bus, 100).
 
 % customerPreferredAccommodation(X, Y, R) -> Y is the preferred accommodation to customer X with relevance R
 
 customerPreferredAccommodation(customer(ahmed, aly, 1993-01-30, single, 0, student), hotel, 20).
 customerPreferredAccommodation(customer(mohamed, elkasad, 1999-01-30, single, 0, student), hotel, 100).
+customerPreferredAccommodation(customer(ahmed, obama, 1995-01-30, single, 0, student), hotel,20).
+customerPreferredAccommodation(customer(mo, qamal, 1997-01-30, single, 0, student), hotel, 20).
+customerPreferredAccommodation(customer(hassan, aly, 1999-01-30, single, 0, student), hotel, 20).
 
 
 %OverlapPeriod method:
