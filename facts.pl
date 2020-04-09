@@ -192,17 +192,19 @@ maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
     maximizeSatisfaction(T, T1, Offer, S2),
     max(S1, S2, S).
 
-removeBestCustomer([Customer|T], [Preference|T1], Offer, S, T, T1):-
+removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Customer, Preference):-
     preferenceSatisfaction(Customer, Preference, Offer, S).
-removeBestCustomer([Customer|T], [Preference|T1], Offer, S, [Customer|T2], [Preference|T3]):-
-    removeBestCustomer(T, T1, Offer, S, T2, T3).
+removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Custom, Pref):-
+    removeBestCustomer(T, T1, Offer, S, Custom, Pref).
 
 satisfactionByOffer([], [], _, 0, _).
 satisfactionByOffer(_, _, _, 0, 0).
-satisfactionByOffer([Customer|T], [Preference|T1], Offer, S, N):-
-    maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S1),
+satisfactionByOffer(Customers, Preferences, Offer, S, N):-
+    maximizeSatisfaction(Customers, Preferences, Offer, S1),
     N1 is N-1,
-    removeBestCustomer([Customer|T], [Preference|T1], Offer, S1, RemainingCustomers, RemainingPrefs),
+    removeBestCustomer(Customers, Preferences, Offer, S1, Customer, Preference),
+    delete(Customers, Customer, RemainingCustomers),
+    delete(Preferences, Preference, RemainingPrefs),
     satisfactionByOffer(RemainingCustomers, RemainingPrefs, Offer, S2, N1),
     S is S1 + S2.
 
