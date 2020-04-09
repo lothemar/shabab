@@ -185,7 +185,7 @@ maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
 satisfactionByOffer([], [], _, 0, _).
 satisfactionByOffer(_, _, _, 0, 0).
 satisfactionByOffer([Customer|T], [Preference|T1], Offer, S, N):-
-    maximizeSatisfaction(Customer, Preference, Offer, S1),
+    maximizeSatisfaction(Customers, Preference, Offer, S1),
     N1 is N-1,
     satisfactionByOffer(T, T1, Offer, S2, N1),
     S is S1 + S2.
@@ -201,6 +201,6 @@ findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S):-
 
 recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
     offersProvided(PreferenceList, Offers),
-    findBestOffer(Customers, PreferenceList, Offers, Offer, S),
+    findBestOffer(Customers, PreferenceList, Offers, Offer, S).
 %    getCustomers(Customers, Offer, CustomersChosen).
 %getCustomers will return the combination of CustomersChosen that led to the best offer
