@@ -38,6 +38,45 @@ customerPreferredAccommodation(customer(mo, qamal, 1997-01-30, single, 0, studen
 customerPreferredAccommodation(customer(hassan, aly, 1999-01-30, single, 0, student), hotel, 80).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%possiblesubset
+perm([H|T],L):-
+	perm(T,P),
+	insert(H,P,L).
+perm([],[]).
+
+insert(X,[H|T],[H|T1]):-	
+	insert(X,T,T1).
+insert(X,L,[X|L]).
+
+subset([],[]).
+subset([A|B] , [A|C]):-
+	subset(B,C).
+subset([_|A],B):-
+	subset(A,B).
+possibleSubset([H|T],O):-
+	subset([H|T],O1),
+	perm(O1,O).
+possibleSubset([],[]).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ChoosePreferences
+activityChecker(Prefs):- member(activity(_) , Prefs) , \+(H = activity(_)).  
+choosePreferences([H|T] , ChosenPreferences) :-
+    (H = activity(L),
+    possibleSubset(L,O1),
+    O = activity(O1),
+    possibleSubset(T,O2),
+    append([O], O2, ChosenPreferences)).
+choosePreferences(Prefs ,  ChosenPreferences) :-
+    activityChecker(Prefs),
+    select(activity(_) , Prefs , Prefsnew),
+    member(activity(_), Prefs),
+    append([activity(temp)] , Prefsnew , Prefsupdated),
+    choosePreferences(Prefsupdated , ChosenPreferences).
+choosePreferences(Prefs , ChosenPreferences) :-
+    \+ activityChecker(Prefs),
+    possibleSubset(Prefs , ChosenPreferences).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %OverlapPeriod method:
 overlapPeriod(period(YMD1,YMD2), period(YMD3,YMD4)):-  %2020 -> 2020 , 2019 -> 2021 ||| 2019 -> 2021 , 2020 -> 2020
 	(toString(YMD1,S1), parseInteger(S1,L1), nth0(0,L1,Year1), nth0(1,L1,Month1), nth0(2,L1,Day1)),
@@ -121,13 +160,7 @@ preferenceSatisfaction(Offer, Customer, ChosenPrefs, S):-
     activityPreference(Offer, Customer, ChosenPrefs, S1),
     meanPreference(Offer, Customer, ChosenPrefs, S2),
     accomodationPreference(Offer, Customer, ChosenPrefs, S3),
-    S is S1 + S2 + S3, !.
-%possibleSubset predicate:
-%nothing to explain really
-possibleSubset([],[]).
-possibleSubset([H|_],[H]).
-possibleSubset(L,R) :- permutation(L, R).
-possibleSubset([_|T],R) :- possibleSubset(T, R).
+    S is S1 + S2 + S3, !.   
 
 validate(dest(X), [X|T]).
 validate(dest(X), [Y|T]):-
