@@ -200,6 +200,10 @@ recommendOfferForCustomer(Prefs, ChosenPrefs, Offer):-
 max(S1, S2, S2):-
     S2>S1.
 max(S1, S2, S1).
+%FindBestCustomer(S1, S2, Customer1, Customer2, Preference1, Preference2, S, Customer, Preference).
+findBestCustomer(S1, S2, Customer1, Customer2, Preference1, Preference2, S2, Customer2, Preference2):-
+    S2>=S1.
+findBestCustomer(S1, S2, Customer1, Customer2, Preference1, Preference2, S1, Customer1, Preference1).
 %max(S1, S2, Offer1, Offer2, CustomerChosen1, CustomersChosen2, S, Offer, CustomersChosen).
 max(S1, S2, Offer1, Offer2, S2, CustomersChosen1, CustomersChosen2, Offer2, CustomersChosen2):-
     S2>S1.
@@ -214,27 +218,21 @@ offersProvided([Pref|T], [Offer| T1]):-
     recommendOfferForCustomer(Pref, _, Offer),
     offersProvided(T, T1).
 
-maximizeSatisfaction([], [], _, 0).
-maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
-    preferenceSatisfaction(Offer, Customer, Preference, S1),
-    maximizeSatisfaction(T, T1, Offer, S2),
-    max(S1, S2, S).
-
-removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Customer, Preference):-
-    preferenceSatisfaction(Customer, Preference, Offer, S).
-removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Custom, Pref):-
-    removeBestCustomer(T, T1, Offer, S, Custom, Pref).
+maximizeSatisfaction([], [], _, 0, nil, nil).
+maximizeSatisfaction([Customer1|T], [Preference1|T1], Offer, S, Customer, Preference):-
+    preferenceSatisfaction(Offer, Customer1, Preference1, S1),
+    maximizeSatisfaction(T, T1, Offer, S2, Customer2, Preference2),
+    findBestCustomer(S1, S2, Customer1, Customer2, Preference1, Preference2, S, Customer, Preference).
 
 satisfactionByOffer([], [], _, 0, _, []).
 satisfactionByOffer(_, _, _, 0, 0, []).
 satisfactionByOffer(Customers, Preferences, Offer, S, N, CustomersChosen):-
-    maximizeSatisfaction(Customers, Preferences, Offer, S1),
+    maximizeSatisfaction(Customers, Preferences, Offer, S1, Customer, Preference),
     N1 is N-1,
-    removeBestCustomer(Customers, Preferences, Offer, S1, Customer, Preference),
     delete(Customers, Customer, RemainingCustomers),
     delete(Preferences, Preference, RemainingPrefs),
-    append([Customer], CustomersChosenSoFar, CustomersChosen),
     satisfactionByOffer(RemainingCustomers, RemainingPrefs, Offer, S2, N1, CustomersChosenSoFar),
+    append([Customer], CustomersChosenSoFar, CustomersChosen),
     S is S1 + S2.
 
 findBestOffer(Customers, Preferences, [], nil, 0, CustomersChosen).
@@ -247,3 +245,6 @@ findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S, CustomersChosen):-
 recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
     offersProvided(PreferenceList, Offers),
     findBestOffer(Customers, PreferenceList, Offers, Offer, S, CustomersChosen).
+
+
+%recommendOffer([customer(mohamed, elkasad, 1999-01-30, single, 0, student)],[[dest(dahab), activity([diving, snorkeling]),budget(18000)]],O,Cust).
