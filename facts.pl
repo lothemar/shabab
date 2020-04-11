@@ -226,7 +226,7 @@ removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Custom, Pref):-
     removeBestCustomer(T, T1, Offer, S, Custom, Pref).
 
 satisfactionByOffer([], [], _, 0, _, []).
-satisfactionByOffer(_, _, _, 0, 0).
+satisfactionByOffer(_, _, _, 0, 0, []).
 satisfactionByOffer(Customers, Preferences, Offer, S, N, CustomersChosen):-
     maximizeSatisfaction(Customers, Preferences, Offer, S1),
     N1 is N-1,
@@ -237,7 +237,7 @@ satisfactionByOffer(Customers, Preferences, Offer, S, N, CustomersChosen):-
     satisfactionByOffer(RemainingCustomers, RemainingPrefs, Offer, S2, N1, CustomersChosenSoFar),
     S is S1 + S2.
 
-findBestOffer(Customers, Preferences, [], nil, 0).
+findBestOffer(Customers, Preferences, [], nil, 0, CustomersChosen).
 findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S, CustomersChosen):-
     get_guests(Offer1, N),
     satisfactionByOffer(Customers, Preferences, Offer1, S1, N, CustomerChosen1),
