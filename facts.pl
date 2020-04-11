@@ -61,18 +61,20 @@ possibleSubset([],[]).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ChoosePreferences
 add(X,List,[X|List]).
+
 activityChecker(Prefs):- member(activity(_) , Prefs).  
 choosePreferences([H|T] , ChosenPreferences) :-
     (H = activity(L),
     possibleSubset(L,O1),
     O = activity(O1),
-    possibleSubset([O|T],ChoosePreferences).
+    possibleSubset([O|T], ChoosePreferences)).
+
 choosePreferences(Prefs ,  ChosenPreferences) :-
-    (nth0(0 , Prefs , H) , \+(H = activity(_)),
+    (nth0(0 , Prefs , H) , \+(H = activity(_))),
     activityChecker(Prefs),
     member(activity(Temp), Prefs),
     delete(Prefs, activity(Temp) , Prefsnew), %%removing the activity from the middle of the list.
-   add(activity(Temp) , Prefsnew , Prefsupdated), %%adding it to the start of the list so it can be it's head.
+    add(activity(Temp) , Prefsnew , Prefsupdated), %%adding it to the start of the list so it can be it's head.
     choosePreferences(Prefsupdated , ChosenPreferences). %%calling the first method on it again.
 choosePreferences(Prefs , ChosenPreferences) :-
     \+activityChecker(Prefs),
