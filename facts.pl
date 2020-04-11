@@ -17,27 +17,28 @@ customerPreferredActivity(customer(ahmed, aly, 1993-01-30, single, 0, student), 
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), snorkeling, 60).
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), diving, 20).
 customerPreferredActivity(customer(mohamed, elkasad, 1999-01-30, single, 0, student), horseRiding, 50).
-customerPreferredActivity(customer(ahmed, obama, 1995-01-30, single, 0, student), diving, 90).
-customerPreferredActivity(customer(mo, qamal, 1997-01-30, single, 0, student), snorkeling, 100).
-customerPreferredActivity(customer(hassan, aly, 1999-01-30, single, 0, student), horseRiding, 70).
+customerPreferredActivity(customer(ahmed, obama, 1995-01-30, single, 0, student), diving, 10).
+customerPreferredActivity(customer(mo, qamal, 1997-01-30, single, 0, student), snorkeling, 10).
+customerPreferredActivity(customer(hassan, aly, 1999-01-30, single, 0, student), horseRiding, 10).
 
 % customerPreferredMean(X, Y, R) -> Y is the preferred transportaion mean wrt customer X with relevance R
 
 customerPreferredMean(customer(ahmed, aly, 1993-01-30, single, 0, student), bus, 100).
 customerPreferredMean(customer(mohamed, elkasad, 1999-01-30, single, 0, student), bus, 10).
-customerPreferredMean(customer(ahmed, obama, 1995-01-30, single, 0, student), bus, 50).
-customerPreferredMean(customer(mo, qamal, 1997-01-30, single, 0, student), bus, 60).
-customerPreferredMean(customer(hassan, aly, 1999-01-30, single, 0, student), bus, 80).
+customerPreferredMean(customer(ahmed, obama, 1995-01-30, single, 0, student), bus, 100).
+customerPreferredMean(customer(mo, qamal, 1997-01-30, single, 0, student), bus, 100).
+customerPreferredMean(customer(hassan, aly, 1999-01-30, single, 0, student), bus, 100).
 
 % customerPreferredAccommodation(X, Y, R) -> Y is the preferred accommodation to customer X with relevance R
 
 customerPreferredAccommodation(customer(ahmed, aly, 1993-01-30, single, 0, student), hotel, 20).
 customerPreferredAccommodation(customer(mohamed, elkasad, 1999-01-30, single, 0, student), hotel, 100).
-customerPreferredAccommodation(customer(ahmed, obama, 1995-01-30, single, 0, student), hotel,70).
-customerPreferredAccommodation(customer(mo, qamal, 1997-01-30, single, 0, student), hotel, 30).
-customerPreferredAccommodation(customer(hassan, aly, 1999-01-30, single, 0, student), hotel, 80).
+customerPreferredAccommodation(customer(ahmed, obama, 1995-01-30, single, 0, student), hotel,10).
+customerPreferredAccommodation(customer(mo, qamal, 1997-01-30, single, 0, student), hotel, 20).
+customerPreferredAccommodation(customer(hassan, aly, 1999-01-30, single, 0, student), hotel, 30).
 
-
+%customers = [customer(ahmed, obama, 1995-01-30, single, 0, student), customer(mo, qamal, 1997-01-30, single, 0, student), customer(hassan, aly, 1999-01-30, single, 0, student)]
+%preferences = [diving, ]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %possiblesubset
 perm([H|T],L):-
@@ -177,8 +178,8 @@ trim(ChosenPrefs, A, M, PrefUpdated):-
     select(means(M), ChosenPrefs, PrefUpdated),
     trim(PrefUpdated, A, _, PrefUpdated), !.
 trim(ChosenPrefs, A, M, PrefUpdated):-
-    prefExists(accomodation(A), ChosenPrefs),
-    select(accomodation(A), ChosenPrefs, PrefUpdated),
+    prefExists(accommodation(A), ChosenPrefs),
+    select(accommodation(A), ChosenPrefs, PrefUpdated),
     trim(PrefUpdated, _ , M, PrefUpdated), !.
 trim(ChosenPrefs, A, M, ChosenPrefs).
 
@@ -194,16 +195,21 @@ getOffer(ChosenPrefs, Offer):-
     validateOffer(PrefUpdated, OfferList).
 
 recommendOfferForCustomer(Prefs, ChosenPrefs, Offer):-
-    possibleSubset(Prefs, ChosenPrefs),
+    choosePreferences(Prefs, ChosenPrefs),
     getOffer(ChosenPrefs, Offer).
 max(S1, S2, S2):-
     S2>S1.
 max(S1, S2, S1).
-max(S1, S2, Offer1, Offer2, S2, Offer2):-
+%max(S1, S2, Offer1, Offer2, CustomerChosen1, CustomersChosen2, S, Offer, CustomersChosen).
+max(S1, S2, Offer1, Offer2, S2, CustomersChosen1, CustomersChosen2, Offer2, CustomersChosen2):-
     S2>S1.
-max(S1, S2, Offer1, Offer2, S1, Offer1).
+max(S1, S2, Offer1, Offer2, CustomersChosen1, CustomersChosen2, S1, Offer1, CustomersChosen1).
 
 offersProvided([], []).
+
+offersProvided([Pref|T], [Offer| T1]):-
+    getOffer(Pref, Offer),
+    offersProvided(T, T1).
 offersProvided([Pref|T], [Offer| T1]):-
     recommendOfferForCustomer(Pref, _, Offer),
     offersProvided(T, T1).
@@ -219,28 +225,25 @@ removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Customer, Preference
 removeBestCustomer([Customer|T], [Preference|T1], Offer, S, Custom, Pref):-
     removeBestCustomer(T, T1, Offer, S, Custom, Pref).
 
-satisfactionByOffer([], [], _, 0, _).
+satisfactionByOffer([], [], _, 0, _, []).
 satisfactionByOffer(_, _, _, 0, 0).
-satisfactionByOffer(Customers, Preferences, Offer, S, N):-
+satisfactionByOffer(Customers, Preferences, Offer, S, N, CustomersChosen):-
     maximizeSatisfaction(Customers, Preferences, Offer, S1),
     N1 is N-1,
     removeBestCustomer(Customers, Preferences, Offer, S1, Customer, Preference),
     delete(Customers, Customer, RemainingCustomers),
     delete(Preferences, Preference, RemainingPrefs),
-    satisfactionByOffer(RemainingCustomers, RemainingPrefs, Offer, S2, N1),
+    append([Customer], CustomersChosenSoFar, CustomersChosen),
+    satisfactionByOffer(RemainingCustomers, RemainingPrefs, Offer, S2, N1, CustomersChosenSoFar),
     S is S1 + S2.
 
 findBestOffer(Customers, Preferences, [], nil, 0).
-findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S):-
-    get_guests(Offer, N),
-    satisfactionByOffer(Customers, Preferences, Offer1, S1, N),
-    findBestOffer(Customers, Preferences, T1, Offer2, S2),
-    max(S1, S2, Offer1, Offer2, S, Offer).
-
-%getCustomers([Customer|T], Offer, [Customers2| T2]):-
+findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S, CustomersChosen):-
+    get_guests(Offer1, N),
+    satisfactionByOffer(Customers, Preferences, Offer1, S1, N, CustomerChosen1),
+    findBestOffer(Customers, Preferences, T1, Offer2, S2, CustomersChosen2),
+    max(S1, S2, Offer1, Offer2, CustomerChosen1, CustomersChosen2, S, Offer, CustomersChosen).
 
 recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
     offersProvided(PreferenceList, Offers),
-    findBestOffer(Customers, PreferenceList, Offers, Offer, S).
-%    getCustomers(Customers, Offer, CustomersChosen).
-%getCustomers will return the combination of CustomersChosen that led to the best offer
+    findBestOffer(Customers, PreferenceList, Offers, Offer, S, CustomersChosen).
