@@ -50,35 +50,20 @@ insert(X,[H|T],[H|T1]):-
 insert(X,L,[X|L]).
 
 subset([],[]).
+subset([activity(L)|T], [activity(X)|T]):-
+    subset(L, D),
+    perm(D, X).
 subset([A|B] , [A|C]):-
 	subset(B,C).
 subset([_|A],B):-
 	subset(A,B).
 possibleSubset([H|T],O):-
-	(subset([H|T],O1),
-	perm(O1,O)).
+	subset([H|T],O1),
+	perm(O1,O).
 possibleSubset([],[]).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ChoosePreferences
-add(X,List,[X|List]).
 
-activityChecker(Prefs):- member(activity(_) , Prefs).  
-choosePreferences([H|T] , ChosenPreferences) :-
-    (H = activity(L),
-    possibleSubset(L,O1),
-    O = activity(O1),
-    possibleSubset([O|T], ChosenPreferences)).
-
-choosePreferences(Prefs ,  ChosenPreferences) :-
-    (nth0(0 , Prefs , H) , \+(H = activity(_))),
-    activityChecker(Prefs),
-    member(activity(Temp), Prefs),
-    delete(Prefs, activity(Temp) , Prefsnew), %%removing the activity from the middle of the list.
-    add(activity(Temp) , Prefsnew , Prefsupdated), %%adding it to the start of the list so it can be it's head.
-    choosePreferences(Prefsupdated , ChosenPreferences). %%calling the first method on it again.
-choosePreferences(Prefs , ChosenPreferences) :-
-    \+activityChecker(Prefs),
-    possibleSubset(Prefs , ChosenPreferences).
+choosePreferences(Prefs, ChosenPrefs):-
+    possibleSubset(Prefs, ChosenPrefs).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %OverlapPeriod method:
 overlapPeriod(period(YMD1,YMD2), period(YMD3,YMD4)):-  %2020 -> 2020 , 2019 -> 2021 ||| 2019 -> 2021 , 2020 -> 2020
