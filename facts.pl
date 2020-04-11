@@ -54,6 +54,7 @@ subset([activity(L)|T], [activity(X)|T]):-
     subset(L, D),
     perm(D, X).
 subset([A|B] , [A|C]):-
+    \+ A = activity(0),
 	subset(B,C).
 subset([_|A],B):-
 	subset(A,B).
@@ -243,3 +244,21 @@ recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
     findBestOffer(Customers, PreferenceList, Offers, Offer, S).
 %    getCustomers(Customers, Offer, CustomersChosen).
 %getCustomers will return the combination of CustomersChosen that led to the best offer
+
+R = [activity([diving, snorkeling]), dest(dahab)] ;
+R = [dest(dahab), activity([diving, snorkeling])] ;
+R = [activity([diving]), dest(dahab)] ;
+R = [dest(dahab), activity([diving])] ;
+R = [activity([snorkeling]), dest(dahab)] ;
+R = [dest(dahab), activity([snorkeling])] ;
+R = [activity([]), dest(dahab)] ;
+R = [dest(dahab), activity([])] ;
+R = [activity([diving, snorkeling]), dest(dahab)] ;
+R = [dest(dahab), activity([diving, snorkeling])] ;
+R = [dest(dahab)] ;
+R = [activity([diving, snorkeling])] ;
+R = [activity([diving])] ;
+R = [activity([snorkeling])] ;
+R = [activity([])] ;
+R = [activity([diving, snorkeling])] ;
+R = [].
