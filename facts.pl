@@ -54,7 +54,7 @@ subset([activity(L)|T], [activity(X)|T]):-
     subset(L, D),
     perm(D, X).
 subset([A|B] , [A|C]):-
-    \+ A = activity(0),
+    \+ A = activity(_),
 	subset(B,C).
 subset([_|A],B):-
 	subset(A,B).
