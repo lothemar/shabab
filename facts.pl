@@ -228,6 +228,8 @@ satisfactionByOffer([], [], _, 0, _, []).
 satisfactionByOffer(_, _, _, 0, 0, []).
 satisfactionByOffer(Customers, Preferences, Offer, S, N, CustomersChosen):-
     maximizeSatisfaction(Customers, Preferences, Offer, S1, Customer, Preference),
+    \+Customer=nil,
+    \+N=0,
     N1 is N-1,
     delete(Customers, Customer, RemainingCustomers),
     delete(Preferences, Preference, RemainingPrefs),
