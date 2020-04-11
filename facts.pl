@@ -69,10 +69,10 @@ choosePreferences([H|T] , ChosenPreferences) :-
     append([O], O2, ChosenPreferences)).
 choosePreferences(Prefs ,  ChosenPreferences) :-
     activityChecker(Prefs),
-    select(activity(_) , Prefs , Prefsnew),
-    member(activity(_), Prefs),
-    append([activity(temp)] , Prefsnew , Prefsupdated),
-    choosePreferences(Prefsupdated , ChosenPreferences).
+    select(activity(_) , Prefs , Prefsnew), %%removing the activity from the middle of the list.
+    member(activity(Temp), Prefs),
+    append([activity(Temp)] , Prefsnew , Prefsupdated), %%adding it to the start of the list so it can be it's head.
+    choosePreferences(Prefsupdated , ChosenPreferences). %%calling the first method on it again.
 choosePreferences(Prefs , ChosenPreferences) :-
     \+ activityChecker(Prefs),
     possibleSubset(Prefs , ChosenPreferences).
