@@ -245,8 +245,9 @@ findBestOffer(Customers, Preferences, [Offer1|T1], Offer, S, CustomersChosen):-
     max(S1, S2, Offer1, Offer2, CustomerChosen1, CustomersChosen2, S, Offer, CustomersChosen).
 
 recommendOffer(Customers, PreferenceList, Offer, CustomersChosen):-
-    offersProvided(PreferenceList, Offers),
+    offersProvided(PreferenceList, Generated),
+    possibleSubset(Generated, Offers),
+    \+Offers=[],
     findBestOffer(Customers, PreferenceList, Offers, Offer, S, CustomersChosen).
-
 
 %recommendOffer([customer(mohamed, elkasad, 1999-01-30, single, 0, student)],[[dest(dahab), activity([diving, snorkeling]),budget(18000)]],O,Cust).
