@@ -210,7 +210,7 @@ offersProvided([Pref|T], [Offer| T1]):-
 
 maximizeSatisfaction([], [], _, 0).
 maximizeSatisfaction([Customer|T], [Preference|T1], Offer, S):-
-    preferenceSatisfaction(Customer, Preference, Offer, S1),
+    preferenceSatisfaction(Offer, Customer, Preference, S1),
     maximizeSatisfaction(T, T1, Offer, S2),
     max(S1, S2, S).
 
