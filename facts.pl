@@ -67,7 +67,7 @@ choosePreferences([H|T] , ChosenPreferences) :-
     (H = activity(L),
     possibleSubset(L,O1),
     O = activity(O1),
-    possibleSubset([O|T], ChoosePreferences)).
+    possibleSubset([O|T], ChosenPreferences)).
 
 choosePreferences(Prefs ,  ChosenPreferences) :-
     (nth0(0 , Prefs , H) , \+(H = activity(_))),
